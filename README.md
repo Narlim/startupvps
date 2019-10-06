@@ -1,4 +1,5 @@
 # startupvps
+just setup bbr and install v2ray,ss
 ### install ansible
 ### edit hosts
 ```
