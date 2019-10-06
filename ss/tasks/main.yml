@@ -1,0 +1,15 @@
+- name: install shadowsocks-libev
+  apt: 
+    name: shadowsocks-libev
+    update_cache: yes
+
+- name: upload config
+  copy: 
+    src: config.json
+    dest: /etc/shadowsocks-libev/config.json
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - restart shadowsocks-libev

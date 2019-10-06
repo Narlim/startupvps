@@ -1,0 +1,5 @@
+- hosts: vps
+  roles:
+   - init
+   - ss
+   - v2ray

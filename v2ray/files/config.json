@@ -1,0 +1,50 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/v2ray/access.log", // 这是 Linux 的路径
+    "error": "/var/log/v2ray/error.log"
+  },
+  "inbound": {
+    "port": 16823, // 服务器监听端口
+    "protocol": "vmess",    // 主传入协议
+    "settings": {
+      "clients": [
+        {
+          "id": "081739d9-ce44-46df-870a-c67c98b1ab78",  // 用户 ID，客户端与服务器必须相同
+          "alterId": 64
+        }
+      ],
+      "detour": {
+        "to": "dynamicPort"
+      }
+    },
+    "streamSettings": {
+      "network": "kcp"
+    }
+  },
+  "inboundDetour":[
+   {
+     "protocol": "vmess",
+     "port": "10000-20000", // 端口范围
+     "tag": "dynamicPort",
+     "settings": {
+       "default": {
+         "level": 1,
+         "alterId": 32
+       }
+     },
+     "allocate": {            // 分配模式
+       "strategy": "random",  // 随机开启
+       "concurrency": 2,      // 同时开放两个端口
+       "refresh": 3           // 每三分钟刷新一次
+     },
+     "streamSettings": {
+        "network": "kcp"
+      }
+   }
+ ],
+  "outbound": {
+    "protocol": "freedom",
+    "settings": {}
+  }
+}

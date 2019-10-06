@@ -1,0 +1,15 @@
+- name: install v2ray
+  shell: curl -Ls https://install.direct/go.sh | bash
+  tags: v2ray
+ 
+- name: upload config
+  copy: 
+    src: config.json
+    dest: /etc/v2ray/config.json
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - restart v2ray
+  tags: v2ray
