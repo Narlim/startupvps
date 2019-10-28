@@ -5,6 +5,41 @@
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
   tags: init
 
+- name: group
+  group:
+    name: fakeadm
+    gid: 1888
+  tags: init
+
+- name: create user
+  user:
+    name: fakeadm
+    comment: fakeadm
+    uid: 1888
+    group: fakeadm
+    shell: /bin/bash
+  tags: init
+
+- name: set authorized key
+  authorized_key:
+    user: fakeadm
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  tags: init
+
+- name: copy sshd config
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  notify:
+    - restart sshd
+  tags: init
+
+
 - name: config bbr
   copy: 
     src: sysctl.conf
