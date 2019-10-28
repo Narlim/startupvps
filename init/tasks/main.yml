@@ -7,24 +7,48 @@
 
 - name: group
   group:
-    name: fakeadm
-    gid: 1888
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+  with_items:
+    - { name: 'admin', gid: 1777 }
+    - { name: 'fakeadm', gid: 1888 }
   tags: init
 
 - name: create user
   user:
-    name: fakeadm
-    comment: fakeadm
-    uid: 1888
-    group: fakeadm
-    shell: /bin/bash
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.group }}"
+    shell: "{{ item.shell }}"
+  with_items:
+    - { name: 'admin', uid: '1777', group: 'admin', shell: '/bin/bash' }
+    - { name: 'fakeadm', uid: '1888', group: 'fakeadm', shell: '/bin/bash' }
   tags: init
 
 - name: set authorized key
   authorized_key:
-    user: fakeadm
+    user: "{{ item.user }}"
     state: present
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}" 
+  with_items:
+    - { user: 'admin' }
+    - { user: 'fakeadm' }
+  tags: init
+ 
+- name: install sudo 
+  apt:
+    name: sudo
+    update_cache: yes
+  tags: init
+
+- name: copy suders file
+  copy:
+    src: sudoers
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: '0400'
+    backup: yes
   tags: init
 
 - name: copy sshd config
